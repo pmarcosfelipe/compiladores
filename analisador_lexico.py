@@ -9,18 +9,32 @@
 # ------------------------------------------------------------
 import ply.lex as lex
 
+import sys
+
+# Leitura de Arquivo
+with open(sys.argv[1], 'r') as f:
+    contents = f.read()
+arqEntrada = contents
+
+
+
 reserved = {
 	'bool' : 'BOOL',
 	'break': 'BREAK',
 	'for' : 'FOR',
 	'false' : 'FALSE',
 	'if' : 'IF',
+    'else' : 'ELSE',
 	'int' : 'INT',
 	'return' : 'RETURN',
 	'string' : 'STRING',
+  # 'logic' : 'LOGIC',
 	'true' : 'TRUE',
-	'while' : 'WHILE'
+	'while' : 'WHILE',
+    'read' : 'READ',
+    'write' : 'WRITE'
 }
+
 # List of token names.   This is always required
 tokens = [
    'ID',
@@ -37,6 +51,7 @@ tokens = [
    'MINUS',
    'TIMES',
    'DIVIDE',
+   'MOD',
    'IGUAL_COMP',
    'DIFERENTE',
    'MAIOR',
@@ -46,6 +61,7 @@ tokens = [
    'OU_LOGICO',
    'E_LOGICO',
    'NEGACAO',
+   'INVERTESINAL',
    'IGUAL_ATRIB',
    'INCREMENTO',
    'DECREMENTO',
@@ -54,7 +70,7 @@ tokens = [
    'MOD_IGUAL',
    'TERN_IF',
    'TERN_ELSE',
-   'COMENTARIO',
+   # 'COMENTARIO',
    'CADEIA_CHAR'
 ] + list(reserved.values())
 
@@ -77,15 +93,17 @@ t_PLUS         = r'\+'
 t_MINUS        = r'-'
 t_TIMES        = r'\*'
 t_DIVIDE       = r'/'
+t_MOD          = r'%'
 t_IGUAL_COMP   = r'=='
 t_DIFERENTE    = r'!='
-t_MAIOR 	   = r'>'
+t_MAIOR 	     = r'>'
 t_MAIOR_IGUAL  = r'>='
 t_MENOR        = r'<'
 t_MENOR_IGUAL  = r'<='
 t_OU_LOGICO    = r'\|\|'
 t_E_LOGICO     = r'&&'
 t_NEGACAO      = r'!'
+t_INVERTESINAL = r'-'
 t_IGUAL_ATRIB  = r'='
 t_INCREMENTO   = r'\+='
 t_DECREMENTO   = r'-='
@@ -94,8 +112,14 @@ t_DIV_ATRIB    = r'/='
 t_MOD_IGUAL    = r'%='
 t_TERN_IF      = r'\?'
 t_TERN_ELSE    = r':'
-t_COMENTARIO   = r'(//.*)|(/\*(.|\n)*\*/)'
+# t_COMENTARIO   = r'(//.*)|(/\*(.|\n)*\*/)'
 t_CADEIA_CHAR  = r'(\"(.|\n)*?\")'
+
+
+def t_comment_multiline(t):
+    r'((//.*)|(/\*(.|\n)*\*/))'
+    # No return value. Token discarded
+    pass
 
 # A regular expression rule with some action code
 def t_NUMBER(t):
@@ -112,9 +136,11 @@ def t_newline(t):
 t_ignore  = ' \t'
 
 # Error handling rule
-def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)
+# def t_error(t):
+#     print("Illegal character '%s'" % t.value[0])
+#     t.lexer.skip(1)
+
+
 
 
 # Compute column. 
@@ -127,53 +153,26 @@ def find_column(input,token):
     column = (lex.lexer.lexpos - last_cr) + 1
     return column
 
+
+def t_error(t):
+  print("Illegal character '%s'" % t.value[0])
+  print("Line: " + repr(t.lineno) + " Column: " + repr(find_column(arqEntrada, t)) + '\n')
+  t.lexer.skip(1)
+
+  
 # Build the lexer
 lexer = lex.lex()
+
+lexer.input(arqEntrada)
 
 # Test it out
 # data = ''' () [] {} , ; + - * /  == != > >= < <= || && ! = += -= *= /= %= ? : if then else'''
 
-data = '''
-int v[10];
-/*
-Procedimento de ordenação por troca
-Observe como um parâmetro de arranjo é declarado
-*/
-bubblesort(int v[], int n) {
-int i=0, j;
-bool trocou = true;
-while (i < n-1 && trocou) {
-trocou = false;
-for (j=0; j < n-i-1; j+=1) {
-if (v[j] > v[j+1]) {
-int aux;
-aux = v[j];
-v[j] = v[j+1];
-v[j+1] = aux;
-trocou = true;
-}
-}
-i += 1;
-}
-}
-main() {
-int i;
-for (i=0; i < 10; i+=1) {
-read v[i];
-}
-bubblesort(v, 10);
-for (i=0; i < 10; i+=1) {
-write v[i], " ";
-}
-}
-'''
-# Give the lexer some input
-lexer.input(data)
 
 # Tokenize
 while True:
     tok = lexer.token()
-    coluna = find_column(data,tok)
+    coluna = find_column(arqEntrada,tok)
     if not tok: 
         break      # No more input
     print(tok.type, tok.value, tok.lineno, coluna)
