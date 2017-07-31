@@ -30,7 +30,7 @@ Rule 24    stmt -> subCall PONTOVIRGULA
 Rule 25    ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES
 Rule 26    ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES block RCHAVES
 Rule 27    whileStmt -> WHILE LPAREN exp RPAREN LCHAVES block RCHAVES
-Rule 28    forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+Rule 28    forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
 Rule 29    breakStmt -> BREAK PONTOVIRGULA
 Rule 30    readStmt -> READ var PONTOVIRGULA
 Rule 31    writeStmt -> WRITE expList PONTOVIRGULA
@@ -60,7 +60,7 @@ Rule 54    exp -> exp OU_LOGICO exp
 Rule 55    exp -> exp E_LOGICO exp
 Rule 56    exp -> NEGACAO exp
 Rule 57    exp -> INVERTESINAL exp
-Rule 58    exp -> exp TERN_IF exp TERN_ELSE
+Rule 58    exp -> exp TERN_IF exp TERN_ELSE exp
 Rule 59    exp -> subCall
 Rule 60    exp -> var
 Rule 61    exp -> literal
@@ -109,7 +109,7 @@ IGUAL_COMP           : 48
 INCREMENTO           : 36
 INT                  : 10
 INVERTESINAL         : 57
-LCHAVES              : 3 4 9 25 26 26 27
+LCHAVES              : 3 4 9 25 26 26 27 28
 LCOL                 : 8 9 14 42
 LPAREN               : 3 4 25 26 27 28 34 62
 MAIOR                : 52
@@ -125,7 +125,7 @@ NUMBER               : 8 9 63
 OU_LOGICO            : 54
 PLUS                 : 43
 PONTOVIRGULA         : 5 23 24 28 28 29 30 31 32 33
-RCHAVES              : 3 4 9 25 26 26 27
+RCHAVES              : 3 4 9 25 26 26 27 28
 RCOL                 : 8 9 14 42
 READ                 : 30
 RETURN               : 32 33
@@ -148,7 +148,7 @@ breakStmt            : 19
 dec                  : 75 76
 decSeq               : 1 75
 empty                : 68 72 78 82
-exp                  : 25 26 27 28 33 35 36 37 38 39 40 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 52 53 53 54 54 55 55 56 57 58 58 62 83 84
+exp                  : 25 26 27 28 33 35 36 37 38 39 40 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 52 53 53 54 54 55 55 56 57 58 58 58 62 83 84
 expList              : 31 34
 expSeq               : 81 83
 forStmt              : 18
@@ -821,7 +821,7 @@ state 46
     (25) ifStmt -> . IF LPAREN exp RPAREN LCHAVES block RCHAVES
     (26) ifStmt -> . IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES block RCHAVES
     (27) whileStmt -> . WHILE LPAREN exp RPAREN LCHAVES block RCHAVES
-    (28) forStmt -> . FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> . FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
     (29) breakStmt -> . BREAK PONTOVIRGULA
     (32) returnStmt -> . RETURN PONTOVIRGULA
     (33) returnStmt -> . RETURN exp PONTOVIRGULA
@@ -837,14 +837,6 @@ state 46
     (41) var -> . ID
     (42) var -> . ID LCOL exp RCOL
 
-  ! shift/reduce conflict for IF resolved as shift
-  ! shift/reduce conflict for WHILE resolved as shift
-  ! shift/reduce conflict for FOR resolved as shift
-  ! shift/reduce conflict for BREAK resolved as shift
-  ! shift/reduce conflict for RETURN resolved as shift
-  ! shift/reduce conflict for READ resolved as shift
-  ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for ID resolved as shift
     RCHAVES         reduce using rule 85 (empty -> .)
     IF              shift and go to state 67
     WHILE           shift and go to state 56
@@ -854,15 +846,6 @@ state 46
     READ            shift and go to state 55
     WRITE           shift and go to state 64
     ID              shift and go to state 66
-
-  ! IF              [ reduce using rule 85 (empty -> .) ]
-  ! WHILE           [ reduce using rule 85 (empty -> .) ]
-  ! FOR             [ reduce using rule 85 (empty -> .) ]
-  ! BREAK           [ reduce using rule 85 (empty -> .) ]
-  ! RETURN          [ reduce using rule 85 (empty -> .) ]
-  ! READ            [ reduce using rule 85 (empty -> .) ]
-  ! WRITE           [ reduce using rule 85 (empty -> .) ]
-  ! ID              [ reduce using rule 85 (empty -> .) ]
 
     writeStmt                      shift and go to state 68
     readStmt                       shift and go to state 57
@@ -967,7 +950,7 @@ state 53
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1070,20 +1053,12 @@ state 60
 
     (78) stmtList -> empty .
 
-    IF              reduce using rule 78 (stmtList -> empty .)
-    WHILE           reduce using rule 78 (stmtList -> empty .)
-    FOR             reduce using rule 78 (stmtList -> empty .)
-    BREAK           reduce using rule 78 (stmtList -> empty .)
-    RETURN          reduce using rule 78 (stmtList -> empty .)
-    READ            reduce using rule 78 (stmtList -> empty .)
-    WRITE           reduce using rule 78 (stmtList -> empty .)
-    ID              reduce using rule 78 (stmtList -> empty .)
     RCHAVES         reduce using rule 78 (stmtList -> empty .)
 
 
 state 61
 
-    (28) forStmt -> FOR . LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> FOR . LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
 
     LPAREN          shift and go to state 96
 
@@ -1121,7 +1096,7 @@ state 63
     (25) ifStmt -> . IF LPAREN exp RPAREN LCHAVES block RCHAVES
     (26) ifStmt -> . IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES block RCHAVES
     (27) whileStmt -> . WHILE LPAREN exp RPAREN LCHAVES block RCHAVES
-    (28) forStmt -> . FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> . FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
     (29) breakStmt -> . BREAK PONTOVIRGULA
     (32) returnStmt -> . RETURN PONTOVIRGULA
     (33) returnStmt -> . RETURN exp PONTOVIRGULA
@@ -1137,14 +1112,6 @@ state 63
     (41) var -> . ID
     (42) var -> . ID LCOL exp RCOL
 
-  ! shift/reduce conflict for IF resolved as shift
-  ! shift/reduce conflict for WHILE resolved as shift
-  ! shift/reduce conflict for FOR resolved as shift
-  ! shift/reduce conflict for BREAK resolved as shift
-  ! shift/reduce conflict for RETURN resolved as shift
-  ! shift/reduce conflict for READ resolved as shift
-  ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for ID resolved as shift
     RCHAVES         reduce using rule 85 (empty -> .)
     IF              shift and go to state 67
     WHILE           shift and go to state 56
@@ -1154,15 +1121,6 @@ state 63
     READ            shift and go to state 55
     WRITE           shift and go to state 64
     ID              shift and go to state 66
-
-  ! IF              [ reduce using rule 85 (empty -> .) ]
-  ! WHILE           [ reduce using rule 85 (empty -> .) ]
-  ! FOR             [ reduce using rule 85 (empty -> .) ]
-  ! BREAK           [ reduce using rule 85 (empty -> .) ]
-  ! RETURN          [ reduce using rule 85 (empty -> .) ]
-  ! READ            [ reduce using rule 85 (empty -> .) ]
-  ! WRITE           [ reduce using rule 85 (empty -> .) ]
-  ! ID              [ reduce using rule 85 (empty -> .) ]
 
     writeStmt                      shift and go to state 68
     readStmt                       shift and go to state 57
@@ -1201,7 +1159,7 @@ state 64
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1347,14 +1305,6 @@ state 72
     (15) block -> varDecList stmtList .
 
     RCHAVES         reduce using rule 15 (block -> varDecList stmtList .)
-    IF              reduce using rule 15 (block -> varDecList stmtList .)
-    WHILE           reduce using rule 15 (block -> varDecList stmtList .)
-    FOR             reduce using rule 15 (block -> varDecList stmtList .)
-    BREAK           reduce using rule 15 (block -> varDecList stmtList .)
-    RETURN          reduce using rule 15 (block -> varDecList stmtList .)
-    READ            reduce using rule 15 (block -> varDecList stmtList .)
-    WRITE           reduce using rule 15 (block -> varDecList stmtList .)
-    ID              reduce using rule 15 (block -> varDecList stmtList .)
 
 
 state 73
@@ -1495,7 +1445,7 @@ state 81
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1555,7 +1505,7 @@ state 83
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1600,7 +1550,7 @@ state 84
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1643,7 +1593,7 @@ state 85
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    shift and go to state 121
     PLUS            shift and go to state 120
@@ -1717,7 +1667,7 @@ state 89
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1762,7 +1712,7 @@ state 90
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1807,7 +1757,7 @@ state 91
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1852,7 +1802,7 @@ state 92
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1897,7 +1847,7 @@ state 93
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1942,7 +1892,7 @@ state 94
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -1987,7 +1937,7 @@ state 95
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2016,7 +1966,7 @@ state 95
 
 state 96
 
-    (28) forStmt -> FOR LPAREN . assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> FOR LPAREN . assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
     (35) assign -> . var IGUAL_ATRIB exp
     (36) assign -> . var INCREMENTO exp
     (37) assign -> . var DECREMENTO exp
@@ -2035,14 +1985,6 @@ state 97
 
     (77) stmtList -> stmt stmtList .
 
-    IF              reduce using rule 77 (stmtList -> stmt stmtList .)
-    WHILE           reduce using rule 77 (stmtList -> stmt stmtList .)
-    FOR             reduce using rule 77 (stmtList -> stmt stmtList .)
-    BREAK           reduce using rule 77 (stmtList -> stmt stmtList .)
-    RETURN          reduce using rule 77 (stmtList -> stmt stmtList .)
-    READ            reduce using rule 77 (stmtList -> stmt stmtList .)
-    WRITE           reduce using rule 77 (stmtList -> stmt stmtList .)
-    ID              reduce using rule 77 (stmtList -> stmt stmtList .)
     RCHAVES         reduce using rule 77 (stmtList -> stmt stmtList .)
 
 
@@ -2086,7 +2028,7 @@ state 101
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     VIRGULA         shift and go to state 137
     RPAREN          reduce using rule 84 (expSeq -> exp .)
@@ -2130,7 +2072,7 @@ state 102
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2179,7 +2121,7 @@ state 103
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2225,7 +2167,7 @@ state 104
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2324,56 +2266,42 @@ state 109
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MINUS           reduce using rule 57 (exp -> INVERTESINAL exp .)
+    TIMES           reduce using rule 57 (exp -> INVERTESINAL exp .)
+    DIVIDE          reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MOD             reduce using rule 57 (exp -> INVERTESINAL exp .)
+    IGUAL_COMP      reduce using rule 57 (exp -> INVERTESINAL exp .)
+    DIFERENTE       reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MENOR           reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MENOR_IGUAL     reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MAIOR           reduce using rule 57 (exp -> INVERTESINAL exp .)
+    MAIOR_IGUAL     reduce using rule 57 (exp -> INVERTESINAL exp .)
+    OU_LOGICO       reduce using rule 57 (exp -> INVERTESINAL exp .)
+    E_LOGICO        reduce using rule 57 (exp -> INVERTESINAL exp .)
+    TERN_IF         reduce using rule 57 (exp -> INVERTESINAL exp .)
     PONTOVIRGULA    reduce using rule 57 (exp -> INVERTESINAL exp .)
     VIRGULA         reduce using rule 57 (exp -> INVERTESINAL exp .)
     RPAREN          reduce using rule 57 (exp -> INVERTESINAL exp .)
     RCOL            reduce using rule 57 (exp -> INVERTESINAL exp .)
     TERN_ELSE       reduce using rule 57 (exp -> INVERTESINAL exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
-    TIMES           shift and go to state 117
-    DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MINUS           [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! TIMES           [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! DIVIDE          [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MOD             [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! DIFERENTE       [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MENOR           [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MAIOR           [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! OU_LOGICO       [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! E_LOGICO        [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
-  ! TERN_IF         [ reduce using rule 57 (exp -> INVERTESINAL exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! TIMES           [ shift and go to state 117 ]
+  ! DIVIDE          [ shift and go to state 126 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 110
@@ -2392,7 +2320,7 @@ state 110
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     RPAREN          shift and go to state 142
     PLUS            shift and go to state 120
@@ -2427,56 +2355,42 @@ state 111
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 56 (exp -> NEGACAO exp .)
+    MINUS           reduce using rule 56 (exp -> NEGACAO exp .)
+    TIMES           reduce using rule 56 (exp -> NEGACAO exp .)
+    DIVIDE          reduce using rule 56 (exp -> NEGACAO exp .)
+    MOD             reduce using rule 56 (exp -> NEGACAO exp .)
+    IGUAL_COMP      reduce using rule 56 (exp -> NEGACAO exp .)
+    DIFERENTE       reduce using rule 56 (exp -> NEGACAO exp .)
+    MENOR           reduce using rule 56 (exp -> NEGACAO exp .)
+    MENOR_IGUAL     reduce using rule 56 (exp -> NEGACAO exp .)
+    MAIOR           reduce using rule 56 (exp -> NEGACAO exp .)
+    MAIOR_IGUAL     reduce using rule 56 (exp -> NEGACAO exp .)
+    OU_LOGICO       reduce using rule 56 (exp -> NEGACAO exp .)
+    E_LOGICO        reduce using rule 56 (exp -> NEGACAO exp .)
+    TERN_IF         reduce using rule 56 (exp -> NEGACAO exp .)
     PONTOVIRGULA    reduce using rule 56 (exp -> NEGACAO exp .)
     VIRGULA         reduce using rule 56 (exp -> NEGACAO exp .)
     RPAREN          reduce using rule 56 (exp -> NEGACAO exp .)
     RCOL            reduce using rule 56 (exp -> NEGACAO exp .)
     TERN_ELSE       reduce using rule 56 (exp -> NEGACAO exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
-    TIMES           shift and go to state 117
-    DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MINUS           [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! TIMES           [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! DIVIDE          [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MOD             [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! DIFERENTE       [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MENOR           [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MAIOR           [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! OU_LOGICO       [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! E_LOGICO        [ reduce using rule 56 (exp -> NEGACAO exp .) ]
-  ! TERN_IF         [ reduce using rule 56 (exp -> NEGACAO exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! TIMES           [ shift and go to state 117 ]
+  ! DIVIDE          [ shift and go to state 126 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 112
@@ -2497,7 +2411,7 @@ state 112
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2542,7 +2456,7 @@ state 113
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2587,7 +2501,7 @@ state 114
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2616,7 +2530,7 @@ state 114
 
 state 115
 
-    (58) exp -> exp TERN_IF . exp TERN_ELSE
+    (58) exp -> exp TERN_IF . exp TERN_ELSE exp
     (43) exp -> . exp PLUS exp
     (44) exp -> . exp MINUS exp
     (45) exp -> . exp TIMES exp
@@ -2632,7 +2546,7 @@ state 115
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2677,7 +2591,7 @@ state 116
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2722,7 +2636,7 @@ state 117
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2767,7 +2681,7 @@ state 118
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2812,7 +2726,7 @@ state 119
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2857,7 +2771,7 @@ state 120
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2917,7 +2831,7 @@ state 122
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -2962,7 +2876,7 @@ state 123
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -3007,7 +2921,7 @@ state 124
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -3052,7 +2966,7 @@ state 125
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -3097,7 +3011,7 @@ state 126
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -3155,7 +3069,7 @@ state 128
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     RPAREN          shift and go to state 157
     PLUS            shift and go to state 120
@@ -3190,7 +3104,7 @@ state 129
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 39 (assign -> var DIV_ATRIB exp .)
     RPAREN          reduce using rule 39 (assign -> var DIV_ATRIB exp .)
@@ -3226,7 +3140,7 @@ state 130
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 35 (assign -> var IGUAL_ATRIB exp .)
     RPAREN          reduce using rule 35 (assign -> var IGUAL_ATRIB exp .)
@@ -3262,7 +3176,7 @@ state 131
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 40 (assign -> var MOD_IGUAL exp .)
     RPAREN          reduce using rule 40 (assign -> var MOD_IGUAL exp .)
@@ -3298,7 +3212,7 @@ state 132
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 36 (assign -> var INCREMENTO exp .)
     RPAREN          reduce using rule 36 (assign -> var INCREMENTO exp .)
@@ -3334,7 +3248,7 @@ state 133
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 38 (assign -> var MULT_ATRIB exp .)
     RPAREN          reduce using rule 38 (assign -> var MULT_ATRIB exp .)
@@ -3370,7 +3284,7 @@ state 134
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     PONTOVIRGULA    reduce using rule 37 (assign -> var DECREMENTO exp .)
     RPAREN          reduce using rule 37 (assign -> var DECREMENTO exp .)
@@ -3392,7 +3306,7 @@ state 134
 
 state 135
 
-    (28) forStmt -> FOR LPAREN assign . PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> FOR LPAREN assign . PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
 
     PONTOVIRGULA    shift and go to state 158
 
@@ -3432,7 +3346,7 @@ state 137
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -3483,7 +3397,7 @@ state 139
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     RCOL            shift and go to state 161
     PLUS            shift and go to state 120
@@ -3519,7 +3433,7 @@ state 140
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     RPAREN          shift and go to state 162
     PLUS            shift and go to state 120
@@ -3586,22 +3500,12 @@ state 143
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 55 (exp -> exp E_LOGICO exp .)
+    OU_LOGICO       reduce using rule 55 (exp -> exp E_LOGICO exp .)
+    E_LOGICO        reduce using rule 55 (exp -> exp E_LOGICO exp .)
+    TERN_IF         reduce using rule 55 (exp -> exp E_LOGICO exp .)
     PONTOVIRGULA    reduce using rule 55 (exp -> exp E_LOGICO exp .)
     VIRGULA         reduce using rule 55 (exp -> exp E_LOGICO exp .)
     RPAREN          reduce using rule 55 (exp -> exp E_LOGICO exp .)
@@ -3611,31 +3515,27 @@ state 143
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
     IGUAL_COMP      shift and go to state 122
     DIFERENTE       shift and go to state 118
     MENOR           shift and go to state 119
     MENOR_IGUAL     shift and go to state 125
     MAIOR           shift and go to state 116
     MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! MINUS           [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! TIMES           [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! DIVIDE          [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
-  ! MOD             [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! IGUAL_COMP      [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! DIFERENTE       [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! MENOR           [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! MENOR_IGUAL     [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! MAIOR           [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
   ! MAIOR_IGUAL     [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
-  ! OU_LOGICO       [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
-  ! E_LOGICO        [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
-  ! TERN_IF         [ reduce using rule 55 (exp -> exp E_LOGICO exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 144
@@ -3654,22 +3554,11 @@ state 144
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 54 (exp -> exp OU_LOGICO exp .)
+    OU_LOGICO       reduce using rule 54 (exp -> exp OU_LOGICO exp .)
+    TERN_IF         reduce using rule 54 (exp -> exp OU_LOGICO exp .)
     PONTOVIRGULA    reduce using rule 54 (exp -> exp OU_LOGICO exp .)
     VIRGULA         reduce using rule 54 (exp -> exp OU_LOGICO exp .)
     RPAREN          reduce using rule 54 (exp -> exp OU_LOGICO exp .)
@@ -3679,31 +3568,28 @@ state 144
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
     IGUAL_COMP      shift and go to state 122
     DIFERENTE       shift and go to state 118
     MENOR           shift and go to state 119
     MENOR_IGUAL     shift and go to state 125
     MAIOR           shift and go to state 116
     MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
     E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! MINUS           [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! TIMES           [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! DIVIDE          [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
-  ! MOD             [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! IGUAL_COMP      [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! DIFERENTE       [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! MENOR           [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! MENOR_IGUAL     [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! MAIOR           [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! MAIOR_IGUAL     [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
-  ! OU_LOGICO       [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
   ! E_LOGICO        [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
-  ! TERN_IF         [ reduce using rule 54 (exp -> exp OU_LOGICO exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 145
@@ -3722,22 +3608,18 @@ state 145
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    IGUAL_COMP      reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    DIFERENTE       reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    MENOR           reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    MENOR_IGUAL     reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    MAIOR           reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    MAIOR_IGUAL     reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    OU_LOGICO       reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    E_LOGICO        reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
+    TERN_IF         reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
     PONTOVIRGULA    reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
     VIRGULA         reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
     RPAREN          reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .)
@@ -3747,36 +3629,26 @@ state 145
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
   ! MINUS           [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
   ! TIMES           [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
   ! DIVIDE          [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! MOD             [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! DIFERENTE       [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! MENOR           [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! MAIOR           [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! OU_LOGICO       [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! E_LOGICO        [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
-  ! TERN_IF         [ reduce using rule 53 (exp -> exp MAIOR_IGUAL exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 146
 
-    (58) exp -> exp TERN_IF exp . TERN_ELSE
+    (58) exp -> exp TERN_IF exp . TERN_ELSE exp
     (43) exp -> exp . PLUS exp
     (44) exp -> exp . MINUS exp
     (45) exp -> exp . TIMES exp
@@ -3790,7 +3662,7 @@ state 146
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
     TERN_ELSE       shift and go to state 163
     PLUS            shift and go to state 120
@@ -3825,22 +3697,18 @@ state 147
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 52 (exp -> exp MAIOR exp .)
+    IGUAL_COMP      reduce using rule 52 (exp -> exp MAIOR exp .)
+    DIFERENTE       reduce using rule 52 (exp -> exp MAIOR exp .)
+    MENOR           reduce using rule 52 (exp -> exp MAIOR exp .)
+    MENOR_IGUAL     reduce using rule 52 (exp -> exp MAIOR exp .)
+    MAIOR           reduce using rule 52 (exp -> exp MAIOR exp .)
+    MAIOR_IGUAL     reduce using rule 52 (exp -> exp MAIOR exp .)
+    OU_LOGICO       reduce using rule 52 (exp -> exp MAIOR exp .)
+    E_LOGICO        reduce using rule 52 (exp -> exp MAIOR exp .)
+    TERN_IF         reduce using rule 52 (exp -> exp MAIOR exp .)
     PONTOVIRGULA    reduce using rule 52 (exp -> exp MAIOR exp .)
     VIRGULA         reduce using rule 52 (exp -> exp MAIOR exp .)
     RPAREN          reduce using rule 52 (exp -> exp MAIOR exp .)
@@ -3850,31 +3718,21 @@ state 147
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
   ! MINUS           [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
   ! TIMES           [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
   ! DIVIDE          [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! MOD             [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! DIFERENTE       [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! MENOR           [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! MAIOR           [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! OU_LOGICO       [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! E_LOGICO        [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
-  ! TERN_IF         [ reduce using rule 52 (exp -> exp MAIOR exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 148
@@ -3893,56 +3751,42 @@ state 148
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 45 (exp -> exp TIMES exp .)
+    MINUS           reduce using rule 45 (exp -> exp TIMES exp .)
+    TIMES           reduce using rule 45 (exp -> exp TIMES exp .)
+    DIVIDE          reduce using rule 45 (exp -> exp TIMES exp .)
+    MOD             reduce using rule 45 (exp -> exp TIMES exp .)
+    IGUAL_COMP      reduce using rule 45 (exp -> exp TIMES exp .)
+    DIFERENTE       reduce using rule 45 (exp -> exp TIMES exp .)
+    MENOR           reduce using rule 45 (exp -> exp TIMES exp .)
+    MENOR_IGUAL     reduce using rule 45 (exp -> exp TIMES exp .)
+    MAIOR           reduce using rule 45 (exp -> exp TIMES exp .)
+    MAIOR_IGUAL     reduce using rule 45 (exp -> exp TIMES exp .)
+    OU_LOGICO       reduce using rule 45 (exp -> exp TIMES exp .)
+    E_LOGICO        reduce using rule 45 (exp -> exp TIMES exp .)
+    TERN_IF         reduce using rule 45 (exp -> exp TIMES exp .)
     PONTOVIRGULA    reduce using rule 45 (exp -> exp TIMES exp .)
     VIRGULA         reduce using rule 45 (exp -> exp TIMES exp .)
     RPAREN          reduce using rule 45 (exp -> exp TIMES exp .)
     RCOL            reduce using rule 45 (exp -> exp TIMES exp .)
     TERN_ELSE       reduce using rule 45 (exp -> exp TIMES exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
-    TIMES           shift and go to state 117
-    DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MINUS           [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! TIMES           [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! DIVIDE          [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MOD             [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! DIFERENTE       [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MENOR           [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MAIOR           [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! OU_LOGICO       [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! E_LOGICO        [ reduce using rule 45 (exp -> exp TIMES exp .) ]
-  ! TERN_IF         [ reduce using rule 45 (exp -> exp TIMES exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! TIMES           [ shift and go to state 117 ]
+  ! DIVIDE          [ shift and go to state 126 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 149
@@ -3961,22 +3805,14 @@ state 149
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 49 (exp -> exp DIFERENTE exp .)
+    IGUAL_COMP      reduce using rule 49 (exp -> exp DIFERENTE exp .)
+    DIFERENTE       reduce using rule 49 (exp -> exp DIFERENTE exp .)
+    OU_LOGICO       reduce using rule 49 (exp -> exp DIFERENTE exp .)
+    E_LOGICO        reduce using rule 49 (exp -> exp DIFERENTE exp .)
+    TERN_IF         reduce using rule 49 (exp -> exp DIFERENTE exp .)
     PONTOVIRGULA    reduce using rule 49 (exp -> exp DIFERENTE exp .)
     VIRGULA         reduce using rule 49 (exp -> exp DIFERENTE exp .)
     RPAREN          reduce using rule 49 (exp -> exp DIFERENTE exp .)
@@ -3986,31 +3822,25 @@ state 149
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
     MENOR           shift and go to state 119
     MENOR_IGUAL     shift and go to state 125
     MAIOR           shift and go to state 116
     MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! MINUS           [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! TIMES           [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! DIVIDE          [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! MOD             [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! DIFERENTE       [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! MENOR           [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! MENOR_IGUAL     [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! MAIOR           [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
   ! MAIOR_IGUAL     [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! OU_LOGICO       [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! E_LOGICO        [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
-  ! TERN_IF         [ reduce using rule 49 (exp -> exp DIFERENTE exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 150
@@ -4029,22 +3859,18 @@ state 150
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 50 (exp -> exp MENOR exp .)
+    IGUAL_COMP      reduce using rule 50 (exp -> exp MENOR exp .)
+    DIFERENTE       reduce using rule 50 (exp -> exp MENOR exp .)
+    MENOR           reduce using rule 50 (exp -> exp MENOR exp .)
+    MENOR_IGUAL     reduce using rule 50 (exp -> exp MENOR exp .)
+    MAIOR           reduce using rule 50 (exp -> exp MENOR exp .)
+    MAIOR_IGUAL     reduce using rule 50 (exp -> exp MENOR exp .)
+    OU_LOGICO       reduce using rule 50 (exp -> exp MENOR exp .)
+    E_LOGICO        reduce using rule 50 (exp -> exp MENOR exp .)
+    TERN_IF         reduce using rule 50 (exp -> exp MENOR exp .)
     PONTOVIRGULA    reduce using rule 50 (exp -> exp MENOR exp .)
     VIRGULA         reduce using rule 50 (exp -> exp MENOR exp .)
     RPAREN          reduce using rule 50 (exp -> exp MENOR exp .)
@@ -4054,31 +3880,21 @@ state 150
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 50 (exp -> exp MENOR exp .) ]
   ! MINUS           [ reduce using rule 50 (exp -> exp MENOR exp .) ]
   ! TIMES           [ reduce using rule 50 (exp -> exp MENOR exp .) ]
   ! DIVIDE          [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! MOD             [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! DIFERENTE       [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! MENOR           [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! MAIOR           [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! OU_LOGICO       [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! E_LOGICO        [ reduce using rule 50 (exp -> exp MENOR exp .) ]
-  ! TERN_IF         [ reduce using rule 50 (exp -> exp MENOR exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 151
@@ -4097,56 +3913,42 @@ state 151
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 43 (exp -> exp PLUS exp .)
+    MINUS           reduce using rule 43 (exp -> exp PLUS exp .)
+    MOD             reduce using rule 43 (exp -> exp PLUS exp .)
+    IGUAL_COMP      reduce using rule 43 (exp -> exp PLUS exp .)
+    DIFERENTE       reduce using rule 43 (exp -> exp PLUS exp .)
+    MENOR           reduce using rule 43 (exp -> exp PLUS exp .)
+    MENOR_IGUAL     reduce using rule 43 (exp -> exp PLUS exp .)
+    MAIOR           reduce using rule 43 (exp -> exp PLUS exp .)
+    MAIOR_IGUAL     reduce using rule 43 (exp -> exp PLUS exp .)
+    OU_LOGICO       reduce using rule 43 (exp -> exp PLUS exp .)
+    E_LOGICO        reduce using rule 43 (exp -> exp PLUS exp .)
+    TERN_IF         reduce using rule 43 (exp -> exp PLUS exp .)
     PONTOVIRGULA    reduce using rule 43 (exp -> exp PLUS exp .)
     VIRGULA         reduce using rule 43 (exp -> exp PLUS exp .)
     RPAREN          reduce using rule 43 (exp -> exp PLUS exp .)
     RCOL            reduce using rule 43 (exp -> exp PLUS exp .)
     TERN_ELSE       reduce using rule 43 (exp -> exp PLUS exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MINUS           [ reduce using rule 43 (exp -> exp PLUS exp .) ]
   ! TIMES           [ reduce using rule 43 (exp -> exp PLUS exp .) ]
   ! DIVIDE          [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MOD             [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! DIFERENTE       [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MENOR           [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MAIOR           [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! OU_LOGICO       [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! E_LOGICO        [ reduce using rule 43 (exp -> exp PLUS exp .) ]
-  ! TERN_IF         [ reduce using rule 43 (exp -> exp PLUS exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 152
@@ -4165,22 +3967,14 @@ state 152
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
+    IGUAL_COMP      reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
+    DIFERENTE       reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
+    OU_LOGICO       reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
+    E_LOGICO        reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
+    TERN_IF         reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
     PONTOVIRGULA    reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
     VIRGULA         reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
     RPAREN          reduce using rule 48 (exp -> exp IGUAL_COMP exp .)
@@ -4190,31 +3984,25 @@ state 152
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
     MENOR           shift and go to state 119
     MENOR_IGUAL     shift and go to state 125
     MAIOR           shift and go to state 116
     MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! MINUS           [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! TIMES           [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! DIVIDE          [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! MOD             [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! DIFERENTE       [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! MENOR           [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! MENOR_IGUAL     [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! MAIOR           [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
   ! MAIOR_IGUAL     [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! OU_LOGICO       [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! E_LOGICO        [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
-  ! TERN_IF         [ reduce using rule 48 (exp -> exp IGUAL_COMP exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 153
@@ -4233,7 +4021,7 @@ state 153
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
   ! shift/reduce conflict for PLUS resolved as shift
   ! shift/reduce conflict for MINUS resolved as shift
@@ -4301,56 +4089,42 @@ state 154
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 44 (exp -> exp MINUS exp .)
+    MINUS           reduce using rule 44 (exp -> exp MINUS exp .)
+    MOD             reduce using rule 44 (exp -> exp MINUS exp .)
+    IGUAL_COMP      reduce using rule 44 (exp -> exp MINUS exp .)
+    DIFERENTE       reduce using rule 44 (exp -> exp MINUS exp .)
+    MENOR           reduce using rule 44 (exp -> exp MINUS exp .)
+    MENOR_IGUAL     reduce using rule 44 (exp -> exp MINUS exp .)
+    MAIOR           reduce using rule 44 (exp -> exp MINUS exp .)
+    MAIOR_IGUAL     reduce using rule 44 (exp -> exp MINUS exp .)
+    OU_LOGICO       reduce using rule 44 (exp -> exp MINUS exp .)
+    E_LOGICO        reduce using rule 44 (exp -> exp MINUS exp .)
+    TERN_IF         reduce using rule 44 (exp -> exp MINUS exp .)
     PONTOVIRGULA    reduce using rule 44 (exp -> exp MINUS exp .)
     VIRGULA         reduce using rule 44 (exp -> exp MINUS exp .)
     RPAREN          reduce using rule 44 (exp -> exp MINUS exp .)
     RCOL            reduce using rule 44 (exp -> exp MINUS exp .)
     TERN_ELSE       reduce using rule 44 (exp -> exp MINUS exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MINUS           [ reduce using rule 44 (exp -> exp MINUS exp .) ]
   ! TIMES           [ reduce using rule 44 (exp -> exp MINUS exp .) ]
   ! DIVIDE          [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MOD             [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! DIFERENTE       [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MENOR           [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MAIOR           [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! OU_LOGICO       [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! E_LOGICO        [ reduce using rule 44 (exp -> exp MINUS exp .) ]
-  ! TERN_IF         [ reduce using rule 44 (exp -> exp MINUS exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 155
@@ -4369,22 +4143,18 @@ state 155
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    MOD             reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    IGUAL_COMP      reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    DIFERENTE       reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    MENOR           reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    MENOR_IGUAL     reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    MAIOR           reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    MAIOR_IGUAL     reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    OU_LOGICO       reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    E_LOGICO        reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
+    TERN_IF         reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
     PONTOVIRGULA    reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
     VIRGULA         reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
     RPAREN          reduce using rule 51 (exp -> exp MENOR_IGUAL exp .)
@@ -4394,31 +4164,21 @@ state 155
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
     DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
   ! PLUS            [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
   ! MINUS           [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
   ! TIMES           [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
   ! DIVIDE          [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! MOD             [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! DIFERENTE       [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! MENOR           [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! MAIOR           [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! OU_LOGICO       [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! E_LOGICO        [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
-  ! TERN_IF         [ reduce using rule 51 (exp -> exp MENOR_IGUAL exp .) ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 156
@@ -4437,56 +4197,42 @@ state 156
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for TIMES resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for IGUAL_COMP resolved as shift
-  ! shift/reduce conflict for DIFERENTE resolved as shift
-  ! shift/reduce conflict for MENOR resolved as shift
-  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
-  ! shift/reduce conflict for MAIOR resolved as shift
-  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
-  ! shift/reduce conflict for OU_LOGICO resolved as shift
-  ! shift/reduce conflict for E_LOGICO resolved as shift
-  ! shift/reduce conflict for TERN_IF resolved as shift
+    PLUS            reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MINUS           reduce using rule 46 (exp -> exp DIVIDE exp .)
+    TIMES           reduce using rule 46 (exp -> exp DIVIDE exp .)
+    DIVIDE          reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MOD             reduce using rule 46 (exp -> exp DIVIDE exp .)
+    IGUAL_COMP      reduce using rule 46 (exp -> exp DIVIDE exp .)
+    DIFERENTE       reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MENOR           reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MENOR_IGUAL     reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MAIOR           reduce using rule 46 (exp -> exp DIVIDE exp .)
+    MAIOR_IGUAL     reduce using rule 46 (exp -> exp DIVIDE exp .)
+    OU_LOGICO       reduce using rule 46 (exp -> exp DIVIDE exp .)
+    E_LOGICO        reduce using rule 46 (exp -> exp DIVIDE exp .)
+    TERN_IF         reduce using rule 46 (exp -> exp DIVIDE exp .)
     PONTOVIRGULA    reduce using rule 46 (exp -> exp DIVIDE exp .)
     VIRGULA         reduce using rule 46 (exp -> exp DIVIDE exp .)
     RPAREN          reduce using rule 46 (exp -> exp DIVIDE exp .)
     RCOL            reduce using rule 46 (exp -> exp DIVIDE exp .)
     TERN_ELSE       reduce using rule 46 (exp -> exp DIVIDE exp .)
-    PLUS            shift and go to state 120
-    MINUS           shift and go to state 124
-    TIMES           shift and go to state 117
-    DIVIDE          shift and go to state 126
-    MOD             shift and go to state 123
-    IGUAL_COMP      shift and go to state 122
-    DIFERENTE       shift and go to state 118
-    MENOR           shift and go to state 119
-    MENOR_IGUAL     shift and go to state 125
-    MAIOR           shift and go to state 116
-    MAIOR_IGUAL     shift and go to state 114
-    OU_LOGICO       shift and go to state 113
-    E_LOGICO        shift and go to state 112
-    TERN_IF         shift and go to state 115
 
-  ! PLUS            [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MINUS           [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! TIMES           [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! DIVIDE          [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MOD             [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! IGUAL_COMP      [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! DIFERENTE       [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MENOR           [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MENOR_IGUAL     [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MAIOR           [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! MAIOR_IGUAL     [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! OU_LOGICO       [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! E_LOGICO        [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
-  ! TERN_IF         [ reduce using rule 46 (exp -> exp DIVIDE exp .) ]
+  ! PLUS            [ shift and go to state 120 ]
+  ! MINUS           [ shift and go to state 124 ]
+  ! TIMES           [ shift and go to state 117 ]
+  ! DIVIDE          [ shift and go to state 126 ]
+  ! MOD             [ shift and go to state 123 ]
+  ! IGUAL_COMP      [ shift and go to state 122 ]
+  ! DIFERENTE       [ shift and go to state 118 ]
+  ! MENOR           [ shift and go to state 119 ]
+  ! MENOR_IGUAL     [ shift and go to state 125 ]
+  ! MAIOR           [ shift and go to state 116 ]
+  ! MAIOR_IGUAL     [ shift and go to state 114 ]
+  ! OU_LOGICO       [ shift and go to state 113 ]
+  ! E_LOGICO        [ shift and go to state 112 ]
+  ! TERN_IF         [ shift and go to state 115 ]
 
 
 state 157
@@ -4498,7 +4244,7 @@ state 157
 
 state 158
 
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA . exp PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA . exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
     (43) exp -> . exp PLUS exp
     (44) exp -> . exp MINUS exp
     (45) exp -> . exp TIMES exp
@@ -4514,7 +4260,7 @@ state 158
     (55) exp -> . exp E_LOGICO exp
     (56) exp -> . NEGACAO exp
     (57) exp -> . INVERTESINAL exp
-    (58) exp -> . exp TERN_IF exp TERN_ELSE
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
     (59) exp -> . subCall
     (60) exp -> . var
     (61) exp -> . literal
@@ -4615,28 +4361,48 @@ state 162
 
 state 163
 
-    (58) exp -> exp TERN_IF exp TERN_ELSE .
+    (58) exp -> exp TERN_IF exp TERN_ELSE . exp
+    (43) exp -> . exp PLUS exp
+    (44) exp -> . exp MINUS exp
+    (45) exp -> . exp TIMES exp
+    (46) exp -> . exp DIVIDE exp
+    (47) exp -> . exp MOD exp
+    (48) exp -> . exp IGUAL_COMP exp
+    (49) exp -> . exp DIFERENTE exp
+    (50) exp -> . exp MENOR exp
+    (51) exp -> . exp MENOR_IGUAL exp
+    (52) exp -> . exp MAIOR exp
+    (53) exp -> . exp MAIOR_IGUAL exp
+    (54) exp -> . exp OU_LOGICO exp
+    (55) exp -> . exp E_LOGICO exp
+    (56) exp -> . NEGACAO exp
+    (57) exp -> . INVERTESINAL exp
+    (58) exp -> . exp TERN_IF exp TERN_ELSE exp
+    (59) exp -> . subCall
+    (60) exp -> . var
+    (61) exp -> . literal
+    (62) exp -> . LPAREN exp RPAREN
+    (34) subCall -> . ID LPAREN expList RPAREN
+    (41) var -> . ID
+    (42) var -> . ID LCOL exp RCOL
+    (63) literal -> . NUMBER
+    (64) literal -> . CADEIA_CHAR
+    (65) literal -> . TRUE
+    (66) literal -> . FALSE
 
-    PLUS            reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MINUS           reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    TIMES           reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    DIVIDE          reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MOD             reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    IGUAL_COMP      reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    DIFERENTE       reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MENOR           reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MENOR_IGUAL     reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MAIOR           reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    MAIOR_IGUAL     reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    OU_LOGICO       reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    E_LOGICO        reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    TERN_IF         reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    PONTOVIRGULA    reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    VIRGULA         reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    RPAREN          reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    RCOL            reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
-    TERN_ELSE       reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE .)
+    NEGACAO         shift and go to state 84
+    INVERTESINAL    shift and go to state 81
+    LPAREN          shift and go to state 83
+    ID              shift and go to state 66
+    NUMBER          shift and go to state 29
+    CADEIA_CHAR     shift and go to state 31
+    TRUE            shift and go to state 32
+    FALSE           shift and go to state 28
 
+    var                            shift and go to state 80
+    literal                        shift and go to state 79
+    subCall                        shift and go to state 78
+    exp                            shift and go to state 167
 
 state 164
 
@@ -4664,14 +4430,14 @@ state 164
     BOOL            shift and go to state 5
 
     varDec                         shift and go to state 44
-    block                          shift and go to state 167
+    block                          shift and go to state 168
     type                           shift and go to state 47
     empty                          shift and go to state 45
     varDecList                     shift and go to state 46
 
 state 165
 
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp . PONTOVIRGULA assign RPAREN block
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp . PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES
     (43) exp -> exp . PLUS exp
     (44) exp -> exp . MINUS exp
     (45) exp -> exp . TIMES exp
@@ -4685,9 +4451,9 @@ state 165
     (53) exp -> exp . MAIOR_IGUAL exp
     (54) exp -> exp . OU_LOGICO exp
     (55) exp -> exp . E_LOGICO exp
-    (58) exp -> exp . TERN_IF exp TERN_ELSE
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-    PONTOVIRGULA    shift and go to state 168
+    PONTOVIRGULA    shift and go to state 169
     PLUS            shift and go to state 120
     MINUS           shift and go to state 124
     TIMES           shift and go to state 117
@@ -4731,21 +4497,89 @@ state 166
     BOOL            shift and go to state 5
 
     varDec                         shift and go to state 44
-    block                          shift and go to state 169
+    block                          shift and go to state 170
     type                           shift and go to state 47
     empty                          shift and go to state 45
     varDecList                     shift and go to state 46
 
 state 167
 
-    (27) whileStmt -> WHILE LPAREN exp RPAREN LCHAVES block . RCHAVES
+    (58) exp -> exp TERN_IF exp TERN_ELSE exp .
+    (43) exp -> exp . PLUS exp
+    (44) exp -> exp . MINUS exp
+    (45) exp -> exp . TIMES exp
+    (46) exp -> exp . DIVIDE exp
+    (47) exp -> exp . MOD exp
+    (48) exp -> exp . IGUAL_COMP exp
+    (49) exp -> exp . DIFERENTE exp
+    (50) exp -> exp . MENOR exp
+    (51) exp -> exp . MENOR_IGUAL exp
+    (52) exp -> exp . MAIOR exp
+    (53) exp -> exp . MAIOR_IGUAL exp
+    (54) exp -> exp . OU_LOGICO exp
+    (55) exp -> exp . E_LOGICO exp
+    (58) exp -> exp . TERN_IF exp TERN_ELSE exp
 
-    RCHAVES         shift and go to state 170
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for IGUAL_COMP resolved as shift
+  ! shift/reduce conflict for DIFERENTE resolved as shift
+  ! shift/reduce conflict for MENOR resolved as shift
+  ! shift/reduce conflict for MENOR_IGUAL resolved as shift
+  ! shift/reduce conflict for MAIOR resolved as shift
+  ! shift/reduce conflict for MAIOR_IGUAL resolved as shift
+  ! shift/reduce conflict for OU_LOGICO resolved as shift
+  ! shift/reduce conflict for E_LOGICO resolved as shift
+  ! shift/reduce conflict for TERN_IF resolved as shift
+    PONTOVIRGULA    reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .)
+    VIRGULA         reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .)
+    RPAREN          reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .)
+    RCOL            reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .)
+    TERN_ELSE       reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .)
+    PLUS            shift and go to state 120
+    MINUS           shift and go to state 124
+    TIMES           shift and go to state 117
+    DIVIDE          shift and go to state 126
+    MOD             shift and go to state 123
+    IGUAL_COMP      shift and go to state 122
+    DIFERENTE       shift and go to state 118
+    MENOR           shift and go to state 119
+    MENOR_IGUAL     shift and go to state 125
+    MAIOR           shift and go to state 116
+    MAIOR_IGUAL     shift and go to state 114
+    OU_LOGICO       shift and go to state 113
+    E_LOGICO        shift and go to state 112
+    TERN_IF         shift and go to state 115
+
+  ! PLUS            [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MINUS           [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! TIMES           [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! DIVIDE          [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MOD             [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! IGUAL_COMP      [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! DIFERENTE       [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MENOR           [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MENOR_IGUAL     [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MAIOR           [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! MAIOR_IGUAL     [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! OU_LOGICO       [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! E_LOGICO        [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
+  ! TERN_IF         [ reduce using rule 58 (exp -> exp TERN_IF exp TERN_ELSE exp .) ]
 
 
 state 168
 
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA . assign RPAREN block
+    (27) whileStmt -> WHILE LPAREN exp RPAREN LCHAVES block . RCHAVES
+
+    RCHAVES         shift and go to state 171
+
+
+state 169
+
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA . assign RPAREN LCHAVES block RCHAVES
     (35) assign -> . var IGUAL_ATRIB exp
     (36) assign -> . var INCREMENTO exp
     (37) assign -> . var DECREMENTO exp
@@ -4758,17 +4592,17 @@ state 168
     ID              shift and go to state 88
 
     var                            shift and go to state 59
-    assign                         shift and go to state 171
+    assign                         shift and go to state 172
 
-state 169
+state 170
 
     (25) ifStmt -> IF LPAREN exp RPAREN LCHAVES block . RCHAVES
     (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block . RCHAVES ELSE LCHAVES block RCHAVES
 
-    RCHAVES         shift and go to state 172
+    RCHAVES         shift and go to state 173
 
 
-state 170
+state 171
 
     (27) whileStmt -> WHILE LPAREN exp RPAREN LCHAVES block RCHAVES .
 
@@ -4783,14 +4617,14 @@ state 170
     RCHAVES         reduce using rule 27 (whileStmt -> WHILE LPAREN exp RPAREN LCHAVES block RCHAVES .)
 
 
-state 171
-
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign . RPAREN block
-
-    RPAREN          shift and go to state 173
-
-
 state 172
+
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign . RPAREN LCHAVES block RCHAVES
+
+    RPAREN          shift and go to state 174
+
+
+state 173
 
     (25) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES .
     (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES . ELSE LCHAVES block RCHAVES
@@ -4804,12 +4638,26 @@ state 172
     WRITE           reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES .)
     ID              reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES .)
     RCHAVES         reduce using rule 25 (ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES .)
-    ELSE            shift and go to state 174
+    ELSE            shift and go to state 175
 
 
-state 173
+state 174
 
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN . block
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN . LCHAVES block RCHAVES
+
+    LCHAVES         shift and go to state 176
+
+
+state 175
+
+    (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE . LCHAVES block RCHAVES
+
+    LCHAVES         shift and go to state 177
+
+
+state 176
+
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES . block RCHAVES
     (15) block -> . varDecList stmtList
     (71) varDecList -> . varDec varDecList
     (72) varDecList -> . empty
@@ -4835,32 +4683,10 @@ state 173
     varDec                         shift and go to state 44
     empty                          shift and go to state 45
     type                           shift and go to state 47
-    block                          shift and go to state 175
+    block                          shift and go to state 178
     varDecList                     shift and go to state 46
 
-state 174
-
-    (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE . LCHAVES block RCHAVES
-
-    LCHAVES         shift and go to state 176
-
-
-state 175
-
-    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .
-
-    IF              reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    WHILE           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    FOR             reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    BREAK           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    RETURN          reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    READ            reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    WRITE           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    ID              reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-    RCHAVES         reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN block .)
-
-
-state 176
+state 177
 
     (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES . block RCHAVES
     (15) block -> . varDecList stmtList
@@ -4886,19 +4712,41 @@ state 176
     BOOL            shift and go to state 5
 
     varDec                         shift and go to state 44
-    block                          shift and go to state 177
+    block                          shift and go to state 179
     type                           shift and go to state 47
     empty                          shift and go to state 45
     varDecList                     shift and go to state 46
 
-state 177
+state 178
+
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block . RCHAVES
+
+    RCHAVES         shift and go to state 180
+
+
+state 179
 
     (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES block . RCHAVES
 
-    RCHAVES         shift and go to state 178
+    RCHAVES         shift and go to state 181
 
 
-state 178
+state 180
+
+    (28) forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .
+
+    IF              reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    WHILE           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    FOR             reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    BREAK           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    RETURN          reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    READ            reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    WRITE           reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    ID              reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+    RCHAVES         reduce using rule 28 (forStmt -> FOR LPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign RPAREN LCHAVES block RCHAVES .)
+
+
+state 181
 
     (26) ifStmt -> IF LPAREN exp RPAREN LCHAVES block RCHAVES ELSE LCHAVES block RCHAVES .
 
@@ -4915,176 +4763,6 @@ state 178
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for IF in state 46 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 46 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 46 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 46 resolved as shift
-WARNING: shift/reduce conflict for RETURN in state 46 resolved as shift
-WARNING: shift/reduce conflict for READ in state 46 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 46 resolved as shift
-WARNING: shift/reduce conflict for ID in state 46 resolved as shift
-WARNING: shift/reduce conflict for IF in state 63 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 63 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 63 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 63 resolved as shift
-WARNING: shift/reduce conflict for RETURN in state 63 resolved as shift
-WARNING: shift/reduce conflict for READ in state 63 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 63 resolved as shift
-WARNING: shift/reduce conflict for ID in state 63 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 109 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 109 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 109 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 109 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 109 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 109 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 109 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 109 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 109 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 109 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 109 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 109 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 109 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 109 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 111 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 111 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 111 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 111 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 111 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 111 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 111 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 111 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 111 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 111 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 111 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 111 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 111 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 111 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 143 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 143 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 143 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 143 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 143 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 143 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 143 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 143 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 143 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 143 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 143 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 143 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 143 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 143 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 144 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 144 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 144 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 144 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 144 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 144 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 144 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 144 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 144 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 144 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 144 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 144 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 144 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 144 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 145 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 145 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 145 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 145 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 145 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 145 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 145 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 145 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 145 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 145 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 145 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 145 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 145 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 145 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 147 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 147 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 147 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 147 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 147 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 147 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 147 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 147 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 147 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 147 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 147 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 147 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 147 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 147 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 148 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 148 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 148 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 148 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 148 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 148 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 148 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 148 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 148 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 148 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 148 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 148 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 148 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 148 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 149 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 149 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 149 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 149 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 149 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 149 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 149 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 149 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 149 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 149 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 149 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 149 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 149 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 149 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 150 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 150 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 150 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 150 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 150 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 150 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 150 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 150 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 150 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 150 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 150 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 150 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 150 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 150 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 151 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 151 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 151 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 151 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 151 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 151 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 151 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 151 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 151 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 151 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 151 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 151 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 151 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 151 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 152 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 152 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 152 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 152 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 152 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 152 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 152 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 152 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 152 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 152 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 152 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 152 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 152 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 152 resolved as shift
 WARNING: shift/reduce conflict for PLUS in state 153 resolved as shift
 WARNING: shift/reduce conflict for MINUS in state 153 resolved as shift
 WARNING: shift/reduce conflict for TIMES in state 153 resolved as shift
@@ -5099,45 +4777,17 @@ WARNING: shift/reduce conflict for MAIOR_IGUAL in state 153 resolved as shift
 WARNING: shift/reduce conflict for OU_LOGICO in state 153 resolved as shift
 WARNING: shift/reduce conflict for E_LOGICO in state 153 resolved as shift
 WARNING: shift/reduce conflict for TERN_IF in state 153 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 154 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 154 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 154 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 154 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 154 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 154 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 154 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 154 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 154 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 154 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 154 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 154 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 154 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 154 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 155 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 155 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 155 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 155 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 155 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 155 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 155 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 155 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 155 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 155 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 155 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 155 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 155 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 155 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 156 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 156 resolved as shift
-WARNING: shift/reduce conflict for TIMES in state 156 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 156 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 156 resolved as shift
-WARNING: shift/reduce conflict for IGUAL_COMP in state 156 resolved as shift
-WARNING: shift/reduce conflict for DIFERENTE in state 156 resolved as shift
-WARNING: shift/reduce conflict for MENOR in state 156 resolved as shift
-WARNING: shift/reduce conflict for MENOR_IGUAL in state 156 resolved as shift
-WARNING: shift/reduce conflict for MAIOR in state 156 resolved as shift
-WARNING: shift/reduce conflict for MAIOR_IGUAL in state 156 resolved as shift
-WARNING: shift/reduce conflict for OU_LOGICO in state 156 resolved as shift
-WARNING: shift/reduce conflict for E_LOGICO in state 156 resolved as shift
-WARNING: shift/reduce conflict for TERN_IF in state 156 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 167 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 167 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 167 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 167 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 167 resolved as shift
+WARNING: shift/reduce conflict for IGUAL_COMP in state 167 resolved as shift
+WARNING: shift/reduce conflict for DIFERENTE in state 167 resolved as shift
+WARNING: shift/reduce conflict for MENOR in state 167 resolved as shift
+WARNING: shift/reduce conflict for MENOR_IGUAL in state 167 resolved as shift
+WARNING: shift/reduce conflict for MAIOR in state 167 resolved as shift
+WARNING: shift/reduce conflict for MAIOR_IGUAL in state 167 resolved as shift
+WARNING: shift/reduce conflict for OU_LOGICO in state 167 resolved as shift
+WARNING: shift/reduce conflict for E_LOGICO in state 167 resolved as shift
+WARNING: shift/reduce conflict for TERN_IF in state 167 resolved as shift

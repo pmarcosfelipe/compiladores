@@ -28,7 +28,7 @@ reserved = {
 	'int' : 'INT',
 	'return' : 'RETURN',
 	'string' : 'STRING',
-  # 'logic' : 'LOGIC',
+    # 'logic' : 'LOGIC',
 	'true' : 'TRUE',
 	'while' : 'WHILE',
     'read' : 'READ',

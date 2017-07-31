@@ -1,0 +1,11 @@
+main(){
+	string i;
+	for(i=8; i < 105; i+=15) {
+		read v[i];
+	}
+
+	//bubblesort(v, 10);
+	for (i=7; i < 5; i+=12) {
+		write v[i], " ";
+	}
+}
