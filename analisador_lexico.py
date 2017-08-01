@@ -61,7 +61,6 @@ tokens = [
    'OU_LOGICO',
    'E_LOGICO',
    'NEGACAO',
-   'INVERTESINAL',
    'IGUAL_ATRIB',
    'INCREMENTO',
    'DECREMENTO',
@@ -103,7 +102,6 @@ t_MENOR_IGUAL  = r'<='
 t_OU_LOGICO    = r'\|\|'
 t_E_LOGICO     = r'&&'
 t_NEGACAO      = r'!'
-t_INVERTESINAL = r'-'
 t_IGUAL_ATRIB  = r'='
 t_INCREMENTO   = r'\+='
 t_DECREMENTO   = r'-='

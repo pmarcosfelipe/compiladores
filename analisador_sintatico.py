@@ -30,17 +30,9 @@ precedence = (
     ('left', 'MAIOR', 'MAIOR_IGUAL', 'MENOR', 'MENOR_IGUAL'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
-    ('left', 'NEGACAO', 'INVERTESINAL')
+    ('left', 'NEGACAO')
 )
 
-# precedence = (
-#     ('right', 'NEGACAO'),
-#     ('left', 'E_LOGICO', 'OU_LOGICO'),
-#     ('left', 'MAIOR_IGUAL', 'MENOR_IGUAL', 'MAIOR', 'MENOR', 'IGUAL_COMP', 'DIFERENTE'),
-#     ('left', 'PLUS', 'MINUS'),
-#     ('left', 'TIMES', 'DIVIDE', 'MOD'),
-#     ('right', 'TERN_IF'),
-# );
 
 def p_program(p):
 	'''program : decSeq'''
@@ -270,21 +262,8 @@ def p_var(p):
 
 
 def p_exp(p):
-	'''exp : exp PLUS exp
-		   | exp MINUS exp
-		   | exp TIMES exp
-		   | exp DIVIDE exp
-		   | exp MOD exp
-		   | exp IGUAL_COMP exp
-		   | exp DIFERENTE exp
-		   | exp MENOR exp
-		   | exp MENOR_IGUAL exp
-		   | exp MAIOR exp
-		   | exp MAIOR_IGUAL exp
-		   | exp OU_LOGICO exp
-		   | exp E_LOGICO exp
+	'''exp : opBinaria
 		   | NEGACAO exp
-		   | INVERTESINAL exp
 		   | exp TERN_IF exp TERN_ELSE exp
 		   | subCall
 		   | var
@@ -321,6 +300,23 @@ def p_exp(p):
 	#       | <var>
 	#       | <literal>
 	#       | '(' <exp> ')'
+
+
+def p_opBinaria(p):
+	'''opBinaria : exp PLUS exp
+			   	 | exp MINUS exp
+			   	 | exp TIMES exp
+			   	 | exp DIVIDE exp
+			   	 | exp MOD exp
+			   	 | exp IGUAL_COMP exp
+			   	 | exp DIFERENTE exp
+			   	 | exp MENOR exp
+			   	 | exp MENOR_IGUAL exp
+			   	 | exp MAIOR exp
+			   	 | exp MAIOR_IGUAL exp
+			   	 | exp OU_LOGICO exp
+			   	 | exp E_LOGICO exp
+    '''
 
 
 def p_literal(p):
